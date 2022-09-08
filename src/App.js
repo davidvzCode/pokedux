@@ -2,26 +2,35 @@ import { Col, Spin } from 'antd'
 import Searcher from './components/Searcher'
 import PokemonList from './components/PokemonList'
 import Logo from './static/logo.svg'
-import { getPokemon } from './api/index'
-import { getPokemonWithDetails, setLoading } from './actions'
-import { useDispatch, useSelector } from 'react-redux'
+// import { getPokemon } from './api/index'
+// import { getPokemonWithDetails, setLoading } from './actions'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 
 import './App.css'
 import React from 'react'
+import { fetchPokemonsWithDetails } from './slices/dataSlice'
 
 function App() {
-    const pokemons = useSelector((state) => state.pokemons)
-    const loading = useSelector((state) => state.loading)
+    const pokemons = useSelector((state) => state.data.pokemons, shallowEqual)
+
+    // const pokemons = useSelector((state) =>
+    //     state.getIn(['data', 'pokemons'], shallowEqual)
+    // ).toJS()
+    const loading = useSelector((state) => state.ui.loading)
+
+    // const loading = useSelector((state) => state.getIn(['data', 'loading']))
+
     const dispatch = useDispatch()
 
     React.useEffect(() => {
-        const fetchPokemons = async () => {
-            dispatch(setLoading(true))
-            const pokemonRes = await getPokemon()
-            dispatch(getPokemonWithDetails(pokemonRes))
-            dispatch(setLoading(false))
-        }
-        fetchPokemons()
+        // const fetchPokemons = async () => {
+        //     dispatch(setLoading(true))
+        //     const pokemonRes = await getPokemon()
+        //     dispatch(getPokemonWithDetails(pokemonRes))
+        //     dispatch(setLoading(false))
+        // }
+        // fetchPokemons()
+        dispatch(fetchPokemonsWithDetails())
     }, [])
 
     return (
