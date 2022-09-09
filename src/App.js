@@ -8,10 +8,14 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 
 import './App.css'
 import React from 'react'
-import { fetchPokemonsWithDetails } from './slices/dataSlice'
+import { fetchPokemonsWithDetails, setSearch } from './slices/dataSlice'
 
 function App() {
     const pokemons = useSelector((state) => state.data.pokemons, shallowEqual)
+    const pokemonsFilter = useSelector(
+        (state) => state.data.pokemonsFilter,
+        shallowEqual
+    )
 
     // const pokemons = useSelector((state) =>
     //     state.getIn(['data', 'pokemons'], shallowEqual)
@@ -33,20 +37,28 @@ function App() {
         dispatch(fetchPokemonsWithDetails())
     }, [])
 
+    const handleOnSearch = (value) => {
+        dispatch(setSearch(value))
+    }
+
     return (
         <div className="App">
             <Col span={4} offset={10}>
                 <img src={Logo} alt="Pokedux" />
             </Col>
             <Col span={8} offset={8}>
-                <Searcher />
+                <Searcher handleOnSearch={handleOnSearch} />
             </Col>
             {loading ? (
                 <Col offset={12}>
                     <Spin spinning size="large" />
                 </Col>
             ) : (
-                <PokemonList pokemons={pokemons} />
+                <PokemonList
+                    pokemons={
+                        pokemonsFilter.length > 0 ? pokemonsFilter : pokemons
+                    }
+                />
             )}
         </div>
     )
